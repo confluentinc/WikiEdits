@@ -36,14 +36,14 @@ namespace WikiEditStream
 
             // if(platform == System.PlatformID.Unix)
             // {
-            //     Produce("recent_changes", clientConfig);
+            //     await Produce("recent_changes", clientConfig);
             //     //Consume("recent_changes", clientConfig);
-            //     //Consume("pksqlc-gnponEDITS_PER_PAGE", clientConfig);
+            //     //Consume("<table-topic-name>", clientConfig); // for example, "pksqlc-gnponEDITS_PER_PAGE"
             // }
             // else if(platform == System.PlatformID.Win32NT) 
             // {
             //     Consume("recent_changes", clientConfig);
-            //     //Produce("recent_changes", clientConfig);
+            //     //await Produce("recent_changes", clientConfig);
             // }
 
             Console.WriteLine("Exiting");
@@ -139,7 +139,12 @@ namespace WikiEditStream
             // Configure the consumer group based on the provided configuration. 
             var consumerConfig = new ConsumerConfig(config);
             consumerConfig.GroupId = "wiki-edit-stream-group-1";
+
+            // The offset to start reading from if there are no committed offsets
+            // (or there was an error in retrieving offsets).
             consumerConfig.AutoOffsetReset = AutoOffsetReset.Earliest;
+            
+            // Do not commit offsets.
             consumerConfig.EnableAutoCommit = false;
 
             // Enable canceling the consumer loop with Ctrl+C.
